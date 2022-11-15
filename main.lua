@@ -3,7 +3,7 @@ math.randomseed(os.time())
 local points = require("points")
 local lines = require("lines")
 local path = {}
-Radius = 20
+Radius = 15
 
 -- Init
 function love.load()

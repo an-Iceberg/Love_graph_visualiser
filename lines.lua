@@ -33,6 +33,7 @@ lines.draw = function()
         points[line.to].y
       )
 
+      -- Considering adding a rectangle to the background to make text more readable
       love.graphics.setColor(1, 1, 1)
       -- Centering the text using the width and height of the text itself
       love.graphics.draw(
