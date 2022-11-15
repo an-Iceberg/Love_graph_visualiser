@@ -1,24 +1,25 @@
 math.randomseed(os.time())
 
 -- TODO: consider redoing this as a graph with two main tables: points and lines
-local points = require("points")
---local lines = require("lines")
-local path = {}
+local graph = require("graph")
+-- local path = {}
 local selected_point
 Radius = 15
 
 -- Init
 function love.load()
-  points:add(200, 150)
-  points:add(300, 300)
-  points:add(700, 250)
+  graph:add_point(100, 100) -- 1
+  graph:add_point(200, 200) -- 2
+  graph:add_point(300, 150) -- 3
+  graph:add_point(1000, 700) -- 4
+  graph:add_point(500, 500) -- 5
 
-  --[[
-  lines:add(1, 2, 45)
-  lines:add(2, 3, 306)
-  lines:remove(1, 2)
-  ]]
-  -- points.remove(1)
+  graph:add_line(2, 4, 90)
+  graph:add_line(1, 2, 40)
+  graph:add_line(2, 3, 200)
+  graph:add_line(3, 5, 3985)
+
+  graph:remove_point(4)
 end
 
 -- Mouse input
@@ -49,8 +50,7 @@ end
 function love.draw()
   -- local mouseX, mouseY = love.mouse.getPosition()
 
-  --lines:draw()
-  points:draw()
+  graph:draw_graph()
 end
 
 -- Quit
