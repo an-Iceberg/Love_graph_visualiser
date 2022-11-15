@@ -1,0 +1,18 @@
+{
+  "configurations": [
+    {
+      "name": "Run with LÖVE",
+      "type": "f5anything",
+      "request": "launch",
+      "command": "love ${workspaceFolder}",
+      "terminalName": "LÖVE",
+    },
+    {
+      "name": "Build with makelove",
+      "type": "f5anything",
+      "request": "launch",
+      "command": "makelove",
+      "terminalName": "makelove",
+    },
+  ]
+}
