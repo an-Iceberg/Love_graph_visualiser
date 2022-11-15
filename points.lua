@@ -1,24 +1,38 @@
-local points = {}
+local points = {
+  points = {},
 
--- Adds a point to the table with the index and text of "index"
-points.add = function(self, index, x, y)
-  self[index] = {
-    x = x,
-    y = y,
-    text = love.graphics.newText(love.graphics.getFont(), index)
-  }
-end
+  add = function(self, x, y)
+    local smallest_id = 1
 
--- Removes the point with index "index"
-points.remove = function(self, index)
-  self[index] = nil
-end
+    -- Searches for the smallest missing id
+    for id in ipairs(self.points) do
+      if id == smallest_id + 1 then
+        smallest_id = id
+      else
+        break
+      end
+    end
 
-points.draw = function(self)
-  -- Draws all points to the screen
-  for index, point in pairs(self) do
-    -- Not trying to draw anything when the index is a method name
-    if type(index) == "number" then
+    self.points[smallest_id + 1] = {
+      x = x,
+      y = y,
+      text = love.graphics.newText(love.graphics.getFont(), tostring(smallest_id))
+    }
+  end,
+
+  remove = function(self, id_param)
+    for id in ipairs(self.points) do
+      if id == id_param then
+        table.remove(self.points, id)
+      end
+    end
+
+    -- TODO: remove all lines associated with this point
+  end,
+
+  draw = function(self)
+    -- Draws all points to the screen
+    for _, point in pairs(self.points) do
       -- Draws the point
       love.graphics.setColor(1, 0.5, 0)
       love.graphics.circle("fill", point.x, point.y, Radius)
@@ -32,7 +46,7 @@ points.draw = function(self)
         point.y - (point.text:getHeight() / 2)
       )
     end
-  end
-end
+  end,
+}
 
 return points
