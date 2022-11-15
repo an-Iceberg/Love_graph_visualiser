@@ -1,8 +1,8 @@
 local points = {}
 
 -- Adds a point to the table with the index and text of "index"
-points.add = function(index, x, y)
-  points[index] = {
+points.add = function(self, index, x, y)
+  self[index] = {
     x = x,
     y = y,
     text = love.graphics.newText(love.graphics.getFont(), index)
@@ -10,13 +10,13 @@ points.add = function(index, x, y)
 end
 
 -- Removes the point with index "index"
-points.remove = function(index)
-  points[index] = nil
+points.remove = function(self, index)
+  self[index] = nil
 end
 
-points.draw = function()
+points.draw = function(self)
   -- Draws all points to the screen
-  for index, point in pairs(points) do
+  for index, point in pairs(self) do
     -- Not trying to draw anything when the index is a method name
     if type(index) == "number" then
       -- Draws the point

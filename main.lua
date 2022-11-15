@@ -7,13 +7,13 @@ Radius = 15
 
 -- Init
 function love.load()
-  points.add(1, 200, 150)
-  points.add(2, 300, 300)
-  points.add(43, 700, 250)
+  points:add(1, 200, 150)
+  points:add(2, 300, 300)
+  points:add(43, 700, 250)
 
-  lines.add(1, 2, 45)
-  lines.add(2, 43, 306)
-  lines.remove(1, 2)
+  lines:add(1, 2, 45)
+  lines:add(2, 43, 306)
+  lines:remove(1, 2)
   -- points.remove(1)
 end
 
@@ -45,8 +45,8 @@ end
 function love.draw()
   -- local mouseX, mouseY = love.mouse.getPosition()
 
-  lines.draw()
-  points.draw()
+  lines:draw()
+  points:draw()
 end
 
 -- Quit

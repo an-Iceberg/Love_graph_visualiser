@@ -2,26 +2,26 @@ local lines = {}
 
 local points = require("points")
 
-lines.add = function(from, to, length)
+lines.add = function(self, from, to, length)
   -- TODO: do not allow duplicate lines
-  table.insert(lines, {
+  table.insert(self, {
     from = from,
     to = to,
     length = love.graphics.newText(love.graphics.getFont(), length),
   })
 end
 
-lines.remove = function(from, to)
-  for index, line in ipairs(lines) do
+lines.remove = function(self, from, to)
+  for index, line in ipairs(self) do
     -- Finding the line we want to remove
     if line.from == from and line.to == to then
-      table.remove(lines, index)
+      table.remove(self, index)
     end
   end
 end
 
-lines.draw = function()
-  for index, line in pairs(lines) do
+lines.draw = function(self)
+  for index, line in pairs(self) do
     -- Only drawing the lines and ignoring the methods in the table
     if type(index) == "number" then
       -- Drawing the line
