@@ -1,29 +1,35 @@
 math.randomseed(os.time())
 
--- TODO: consider redoing this as a graph with two main tables: points and lines
-local graph = require("graph")
--- local path = {}
-local selected_point
+require("graph")
+require("mode")
+require("utils/utils")
+
+Selected_point = 0
 Radius = 15
 
 -- Init
 function love.load()
-  graph:add_point(100, 100) -- 1
-  graph:add_point(200, 200) -- 2
-  graph:add_point(300, 150) -- 3
-  graph:add_point(1000, 700) -- 4
-  graph:add_point(500, 500) -- 5
+  Graph:add_point(100, 100) -- 1
+  Graph:add_point(200, 200) -- 2
+  Graph:add_point(300, 150) -- 3
+  Graph:add_point(1000, 700) -- 4
+  Graph:add_point(500, 500) -- 5
 
-  graph:add_line(2, 4, 90)
-  graph:add_line(1, 2, 40)
-  graph:add_line(2, 3, 200)
-  graph:add_line(3, 5, 3985)
+  Graph:add_line(2, 4, 90)
+  Graph:add_line(1, 2, 40)
+  Graph:add_line(2, 3, 200)
+  Graph:add_line(3, 5, 3985)
 
-  graph:remove_point(4)
+  Graph:remove_point(4)
+
+  Mode:increment()
 end
 
 -- Mouse input
 function love.mousepressed(x, y, button)
+  if Mode:is(POINT) and button == 1 then
+    Graph:add_point(x, y)
+  end
 end
 
 function love.mousemoved(x, y, delta_x, delta_y)
@@ -50,7 +56,7 @@ end
 function love.draw()
   -- local mouseX, mouseY = love.mouse.getPosition()
 
-  graph:draw_graph()
+  Graph:draw_graph()
 end
 
 -- Quit

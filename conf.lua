@@ -6,7 +6,9 @@ function love.conf(game)
   game.window.y = 100
   game.window.resizable = false
   game.window.vsync = false
-  game.window.msaa = 0
+  game.window.msaa = 16
+  -- game.window.depth = nil
+  -- game.window.stencil = nil
   game.window.title = "Graph Visualiser"
   game.window.icon = "images/graph_icon.png"
 end
