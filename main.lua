@@ -3,9 +3,11 @@ math.randomseed(os.time())
 require("graph")
 require("mode")
 require("utils/utils")
+require("ui")
 
 Selected_point = 0
 Radius = 15
+Font = love.graphics.getFont()
 
 -- Init
 function love.load()
@@ -27,7 +29,11 @@ end
 
 -- Mouse input
 function love.mousepressed(x, y, button)
-  if Mode:is(POINT) and button == 1 then
+  if
+    Mode:is(POINT) and
+    button == 1 and
+    love.mouse.getX() < love.graphics.getWidth() - (UI.width + Radius)
+  then
     Graph:add_point(x, y)
   end
 end
@@ -54,9 +60,19 @@ end
 
 -- Draw game to screen
 function love.draw()
-  -- local mouseX, mouseY = love.mouse.getPosition()
+  -- local mouse_x, mouse_y = love.mouse.getPosition()
 
-  Graph:draw_graph()
+  --[[
+  -- Right mouse button
+  if love.mouse.isDown(1) and Selected_point ~= 0 then
+    Graph:points[Selected_point].x = mouse_x
+    Graph:points[Selected_point].y = mouse_y
+  end
+  ]]
+
+  Graph:paint_graph()
+
+  UI:paint_ui()
 end
 
 -- Quit

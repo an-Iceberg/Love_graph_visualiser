@@ -36,7 +36,7 @@ Graph = {
   end,
 
   -- Draws all points with their id in the center and a purple ring around them if they're hovered over
-  draw_points = function(self)
+  paint_points = function(self)
     for id, point in pairs(self.points) do
       -- Draws the point
       love.graphics.setColor(1, 0.5, 0)
@@ -47,8 +47,8 @@ Graph = {
       -- Centering the text using the width and height of the text itself
       love.graphics.print(
         id,
-        point.x - (love.graphics.getFont():getWidth(id) / 2),
-        point.y - (love.graphics.getFont():getHeight() / 2)
+        point.x - (Font:getWidth(id) / 2),
+        point.y - (Font:getHeight() / 2)
       )
 
       if Utils.is_point_in_circle(love.mouse.getX(), love.mouse.getY(), point.x, point.y, Radius) then
@@ -68,7 +68,7 @@ Graph = {
     table.insert(self.lines, {
       from = from,
       to = to,
-      length = length--love.graphics.newText(love.graphics.getFont(), length),
+      length = length--love.graphics.newText(Font, length),
     })
   end,
 
@@ -83,48 +83,47 @@ Graph = {
   end,
 
   -- Draws all lines and their lengths centered between the two points
-  draw_lines = function(self)
-    for index, line in pairs(self.lines) do
-      -- Only drawing the lines and ignoring the methods in the table
-      if type(index) == "number" then
-        -- Drawing the line
-        love.graphics.setColor(0, 1, 1)
-        love.graphics.line(
-          self.points[line.from].x,
-          self.points[line.from].y,
-          self.points[line.to].x,
-          self.points[line.to].y
-        )
+  paint_lines = function(self)
+    for _, line in pairs(self.lines) do
+      -- TODO: don't draw the lines from the center of the circle, shift them to the edge of the circle
+      -- Drawing the line
+      love.graphics.setColor(0, 1, 1)
+      love.graphics.line(
+        self.points[line.from].x,
+        self.points[line.from].y,
+        self.points[line.to].x,
+        self.points[line.to].y
+      )
 
-        -- Drawing a rectangle around the line length to make it better readable
-        love.graphics.setColor(0, 1, 1)
-        love.graphics.rectangle(
-          "fill",
-          (self.points[line.to].x + self.points[line.from].x) / 2 - (love.graphics.getFont():getWidth(line.length) / 2) - self.padding,
-          (self.points[line.to].y + self.points[line.from].y) / 2 - (love.graphics.getFont():getHeight() / 2) + 0.5,
-          love.graphics.getFont():getWidth(line.length) + (self.padding * 2),
-          love.graphics.getFont():getHeight(),
-          love.graphics.getFont():getHeight() / 2,
-          love.graphics.getFont():getHeight() / 2
-        )
+      -- TODO: the line length should be drawn on top of the points
+      -- Drawing a rectangle around the line length to make it better readable
+      love.graphics.setColor(0, 1, 1)
+      love.graphics.rectangle(
+        "fill",
+        (self.points[line.to].x + self.points[line.from].x) / 2 - (Font:getWidth(line.length) / 2) - self.padding,
+        (self.points[line.to].y + self.points[line.from].y) / 2 - (Font:getHeight() / 2) + 0.5,
+        Font:getWidth(line.length) + (self.padding * 2),
+        Font:getHeight(),
+        Font:getHeight() / 2,
+        Font:getHeight() / 2
+      )
 
-        -- Considering adding a rectangle to the background to make text more readable
-        love.graphics.setColor(0, 0, 0)
-        -- Centering the text using the width and height of the text itself
-        love.graphics.print(
-          line.length,
-          (self.points[line.to].x + self.points[line.from].x) / 2 - (love.graphics.getFont():getWidth(line.length) / 2),
-          (self.points[line.to].y + self.points[line.from].y) / 2 - (love.graphics.getFont():getHeight() / 2)
-        )
+      -- Considering adding a rectangle to the background to make text more readable
+      love.graphics.setColor(0, 0, 0)
+      -- Centering the text using the width and height of the text itself
+      love.graphics.print(
+        line.length,
+        (self.points[line.to].x + self.points[line.from].x) / 2 - (Font:getWidth(line.length) / 2),
+        (self.points[line.to].y + self.points[line.from].y) / 2 - (Font:getHeight() / 2)
+      )
 
-        -- TODO: draw little triange indicating direction
-      end
+      -- TODO: draw little triange indicating direction
     end
   end,
 
   -- Draws the entire graph
-  draw_graph = function(self)
-    self:draw_lines()
-    self:draw_points()
+  paint_graph = function(self)
+    self:paint_lines()
+    self:paint_points()
   end,
 }
