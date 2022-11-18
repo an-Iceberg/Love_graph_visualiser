@@ -3,6 +3,7 @@ Graph = {
   lines = {},
   path = {},
   padding = 5,
+  hovered_point_id = 0,
 
   -- Adds a point to the graph at the mouse position
   add_point = function(self, x, y)
@@ -23,6 +24,16 @@ Graph = {
     }
   end,
 
+  -- Adds a line from the specified point to the other specified point
+  add_line = function(self, from, to, length)
+    -- TODO: do not allow duplicate lines
+    table.insert(self.lines, {
+      from = from,
+      to = to,
+      length = length--love.graphics.newText(Font, length),
+    })
+  end,
+
   -- Removes a specified point from the graph and all lines associated with it
   remove_point = function(self, id)
     -- Removing any lines associated with the point
@@ -35,12 +46,27 @@ Graph = {
     self.points[id] = nil
   end,
 
-  -- Draws all points with their id in the center and a purple ring around them if they're hovered over
+  -- Removes a specified line
+  remove_line = function(self, from, to)
+    for index, line in ipairs(self.lines) do
+      -- Finding the line we want to remove
+      if line.from == from and line.to == to then
+        table.remove(self.lines, index)
+      end
+    end
+  end,
+
+  -- Draws all points with their id in the center
   paint_points = function(self)
+    -- If no point is hovered upon then this value will stay 0
+    self.hovered_point_id = 0
+
     for id, point in pairs(self.points) do
       -- Draws the point
       love.graphics.setColor(1, 0.5, 0)
       love.graphics.circle("fill", point.x, point.y, Radius)
+      love.graphics.setColor(0, 0, 0)
+      love.graphics.circle("line", point.x, point.y, Radius + 1)
 
       -- Draws the point id
       love.graphics.setColor(0, 0, 0)
@@ -51,33 +77,9 @@ Graph = {
         point.y - (Font:getHeight() / 2)
       )
 
+      -- Makes sure to only hover over one point
       if Utils.is_point_in_circle(love.mouse.getX(), love.mouse.getY(), point.x, point.y, Radius) then
-        love.graphics.setColor(1, 0, 1)
-        love.graphics.circle("line", point.x, point.y, Radius + 5)
-
-        love.graphics.setColor(0, 0, 0)
-        love.graphics.circle("line", point.x, point.y, Radius + 4)
-        love.graphics.circle("line", point.x, point.y, Radius + 6)
-      end
-    end
-  end,
-
-  -- Adds a line from the specified point to the other specified point
-  add_line = function(self, from, to, length)
-    -- TODO: do not allow duplicate lines
-    table.insert(self.lines, {
-      from = from,
-      to = to,
-      length = length--love.graphics.newText(Font, length),
-    })
-  end,
-
-  -- Removes a specified line
-  remove_line = function(self, from, to)
-    for index, line in ipairs(self.lines) do
-      -- Finding the line we want to remove
-      if line.from == from and line.to == to then
-        table.remove(self.lines, index)
+        self.hovered_point_id = id
       end
     end
   end,
@@ -121,9 +123,19 @@ Graph = {
     end
   end,
 
-  -- Draws the entire graph
+  -- Draws the entire graph and paints a highlight around the hovered point
   paint_graph = function(self)
     self:paint_lines()
     self:paint_points()
+
+    -- Draws a highlight around the hovered point
+    if self.hovered_point_id ~= 0 then
+        love.graphics.setColor(1, 0, 1)
+        love.graphics.circle("line", self.points[self.hovered_point_id].x, self.points[self.hovered_point_id].y, Radius + 5)
+
+        love.graphics.setColor(0, 0, 0)
+        love.graphics.circle("line", self.points[self.hovered_point_id].x, self.points[self.hovered_point_id].y, Radius + 4)
+        love.graphics.circle("line", self.points[self.hovered_point_id].x, self.points[self.hovered_point_id].y, Radius + 6)
+    end
   end,
 }

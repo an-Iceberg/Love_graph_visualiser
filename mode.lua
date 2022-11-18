@@ -24,5 +24,5 @@ Mode = {
     if self.mode > MOVE then
       self.mode = self.mode - 1
     end
-  end
+  end,
 }

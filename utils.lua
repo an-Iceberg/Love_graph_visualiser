@@ -24,5 +24,5 @@ Utils =
     end
 
     return true
-  end
+  end,
 }
