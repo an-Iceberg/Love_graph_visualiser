@@ -1,8 +1,8 @@
 UI = {}
 
 UI.width = 200
+UI.hovered_mode = 0
 
--- TODO: handle UI element hover
 UI.paint_ui = function(self)
   -- Paints the UI section on the right
   love.graphics.setColor(0.2, 0.2, 0.2)
@@ -16,19 +16,16 @@ end
 
 UI.paint_mode = function(self)
   -- TODO: better spacing
+  -- TODO: handle UI element hover (composed of two circles and a rectangle in the middle)
   local modes = {"Move", "Point", "Line", "Path"}
   local x_starting_position = love.graphics.getWidth() - UI.width
 
   for index, mode in ipairs(modes) do
-    index = index - 1
     -- Setting the color of each mode
-    if Mode.mode == index then
-      love.graphics.setColor(1, 1, 1)
-    else
-      love.graphics.setColor(0, 0, 0)
-    end
+    if Mode:is(index) then love.graphics.setColor(1, 1, 1)
+    else love.graphics.setColor(0, 0, 0) end
 
-    local x_position = x_starting_position + Graph.padding + (index * (self.width / 4))
+    local x_position = x_starting_position + Graph.padding + ((index - 1) * (self.width / 4))
 
     -- Painting a rectangle around each mode
     love.graphics.rectangle(
@@ -42,11 +39,8 @@ UI.paint_mode = function(self)
     )
 
     -- Painting the text
-    if Mode.mode == index then
-      love.graphics.setColor(0, 0, 0)
-    else
-      love.graphics.setColor(1, 1, 1)
-    end
+    if Mode:is(index) then love.graphics.setColor(0, 0, 0)
+    else love.graphics.setColor(1, 1, 1) end
     love.graphics.print(
       mode,
       x_position + Graph.padding,

@@ -1,7 +1,7 @@
-MOVE = 0
-POINT = 1
-LINE = 2
-PATH = 3
+MOVE = 1
+POINT = 2
+LINE = 3
+PATH = 4
 
 Mode = {}
 
@@ -13,6 +13,10 @@ Mode.is = function(self, mode)
   end
 
   return false
+end
+
+Mode.set = function(self, mode)
+  self.mode = mode
 end
 
 Mode.increment = function(self)

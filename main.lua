@@ -25,6 +25,8 @@ function love.load()
   Graph:remove_point(4)
 
   Mode:increment()
+
+  Mode:set(POINT)
 end
 
 -- Mouse input
