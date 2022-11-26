@@ -15,6 +15,7 @@ UI.paint_ui = function(self)
 end
 
 UI.paint_mode = function(self)
+  -- TODO: better spacing
   local modes = {"Move", "Point", "Line", "Path"}
   local x_starting_position = love.graphics.getWidth() - UI.width
 
@@ -22,7 +23,7 @@ UI.paint_mode = function(self)
     index = index - 1
     -- Setting the color of each mode
     if Mode.mode == index then
-      love.graphics.setColor(0, 0, 0.5)
+      love.graphics.setColor(1, 1, 1)
     else
       love.graphics.setColor(0, 0, 0)
     end
@@ -41,7 +42,11 @@ UI.paint_mode = function(self)
     )
 
     -- Painting the text
-    love.graphics.setColor(1, 1, 1)
+    if Mode.mode == index then
+      love.graphics.setColor(0, 0, 0)
+    else
+      love.graphics.setColor(1, 1, 1)
+    end
     love.graphics.print(
       mode,
       x_position + Graph.padding,
