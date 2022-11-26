@@ -1,7 +1,6 @@
 UI = {}
 
 UI.width = 200
-UI.hovered_mode = 0
 
 UI.paint_ui = function(self)
   -- Paints the UI section on the right
@@ -16,13 +15,13 @@ end
 
 UI.paint_mode = function(self)
   -- TODO: better spacing
-  -- TODO: handle UI element hover (composed of two circles and a rectangle in the middle)
+  -- TODO: refactor this huge mess
   local modes = {"Move", "Point", "Line", "Path"}
   local x_starting_position = love.graphics.getWidth() - UI.width
 
   for index, mode in ipairs(modes) do
     -- Setting the color of each mode
-    if Mode:is(index) then love.graphics.setColor(1, 1, 1)
+    if Mode:is(index) then love.graphics.setColor(0.75, 0.75, 0.75)
     else love.graphics.setColor(0, 0, 0) end
 
     local x_position = x_starting_position + Graph.padding + ((index - 1) * (self.width / 4))
@@ -40,12 +39,65 @@ UI.paint_mode = function(self)
 
     -- Painting the text
     if Mode:is(index) then love.graphics.setColor(0, 0, 0)
-    else love.graphics.setColor(1, 1, 1) end
+    else love.graphics.setColor(0.75, 0.75, 0.75) end
     love.graphics.print(
       mode,
       x_position + Graph.padding,
       Graph.padding
     )
+
+    -- TODO: extract this huge if statement into it's own function (int Utils)
+    -- Checks, if the mouse is within a mode UI element
+    if
+      -- Skipping all further logic checks if we are hovering on the currenlty active mode
+      not Mode:is(index)
+      and
+      (
+        -- Checks rectangle in the middle
+        Utils.is_point_in_rectangle(
+          love.mouse.getX(),
+          love.mouse.getY(),
+          x_position + Graph.padding,
+          Graph.padding,
+          Font:getWidth(mode),
+          Font:getHeight()
+        )
+        or
+        -- Checks left circle
+        Utils.is_point_in_circle(
+          love.mouse.getX(),
+          love.mouse.getY(),
+          x_position + Graph.padding,
+          Graph.padding + (Font:getHeight() / 2),
+          Font:getHeight() / 2
+        )
+        or
+        -- Checks right circle
+        Utils.is_point_in_circle(
+          love.mouse.getX(),
+          love.mouse.getY(),
+          x_position + Font:getWidth(mode) + Graph.padding,
+          Graph.padding + (Font:getHeight() / 2),
+          Font:getHeight() / 2
+        )
+      )
+    then
+      love.graphics.setColor(0.75, 0.75, 0.75)
+      love.graphics.rectangle(
+        "line",
+        x_position - 2,
+        Graph.padding - 2,
+        Font:getWidth(mode) + (2 * Graph.padding) + 4,
+        Font:getHeight() + 4,
+        Font:getHeight() / 2,
+        Font:getHeight() / 2
+      )
+
+      -- User clicks on hovered mode UI element
+      if love.mouse.isDown(1) then
+        Mode:set(index)
+      end
+    end
   end
 end
 
