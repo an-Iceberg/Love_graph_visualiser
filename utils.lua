@@ -25,3 +25,7 @@ Utils.is_point_in_rectangle = function(point_x, point_y, rectangle_top_left_x, r
 
   return true
 end
+
+-- Returns true if the point is inside the pill that is formed around the rectangle
+Utils.is_point_in_pill = function(point_x, point_y, rectangle_top_left_x, rectangle_top_left_y, rectangle_width, rectangle_height)
+end

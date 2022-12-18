@@ -9,10 +9,9 @@ UI.paint_ui = function(self)
 
   self:paint_fps()
   self:paint_mode()
-
-  -- TODO: paint mode and handle mode selection
 end
 
+-- TODO: split this into smaller functions
 UI.paint_mode = function(self)
   -- TODO: better spacing
   -- TODO: refactor this huge mess
@@ -25,27 +24,31 @@ UI.paint_mode = function(self)
     else love.graphics.setColor(0, 0, 0) end
 
     local x_position = x_starting_position + Graph.padding + ((index - 1) * (self.width / 4))
+    -- love.graphics.points(x_position, Graph.padding)
 
     -- Painting a rectangle around each mode
     love.graphics.rectangle(
       "fill",
       x_position,
       Graph.padding,
-      Font:getWidth(mode) + (2 * Graph.padding),
+      (self.width / 4) - (--[[2 *]] Graph.padding),
       Font:getHeight(),
       Font:getHeight() / 2,
       Font:getHeight() / 2
     )
 
+    -- TODO: adjust text position
     -- Painting the text
     if Mode:is(index) then love.graphics.setColor(0, 0, 0)
     else love.graphics.setColor(0.75, 0.75, 0.75) end
     love.graphics.print(
       mode,
-      x_position + Graph.padding,
+      -- x_position + Graph.padding,
+      x_position + (self.width / 8) - (Font:getWidth(mode) / 2) - (Graph.padding / 2),
       Graph.padding
     )
 
+    -- TODO: adjust hover graphics
     -- TODO: extract this huge if statement into it's own function (int Utils)
     -- Checks, if the mouse is within a mode UI element
     if
