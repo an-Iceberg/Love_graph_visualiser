@@ -35,8 +35,8 @@ function love.mousepressed(x, y, button)
   if
     Mode:is(MOVE) and
     button == 1 and
-    Utils.is_point_in_rectangle( x, y, Radius, Radius, love.graphics.getWidth() - (2 * Radius + UI.width), love.graphics.getHeight() - (2 * Radius)) and
-    Graph.hovered_point_id ~= 0
+    Graph.hovered_point_id ~= 0 and
+    Utils:is_point_in_rectangle(x, y, Radius, Radius, love.graphics.getWidth() - (2 * Radius + UI.width), love.graphics.getHeight() - (2 * Radius))
   then
     Selected_point = Graph.hovered_point_id
   end
@@ -45,13 +45,17 @@ function love.mousepressed(x, y, button)
   if
     Mode:is(POINT) and
     button == 1 and
-    Utils.is_point_in_rectangle( x, y, Radius, Radius, love.graphics.getWidth() - (2 * Radius + UI.width), love.graphics.getHeight() - (2 * Radius))
+    Utils:is_point_in_rectangle(x, y, Radius, Radius, love.graphics.getWidth() - (2 * Radius + UI.width), love.graphics.getHeight() - (2 * Radius))
   then
     Graph:add_point(x, y)
   end
 
   -- Remove a point with right click
-  if Mode:is(POINT) and button == 2 and Graph.hovered_point_id ~= 0 then
+  if
+    Mode:is(POINT) and
+    button == 2 and
+    Graph.hovered_point_id ~= 0
+  then
     Graph:remove_point(Graph.hovered_point_id)
   end
 end
@@ -68,7 +72,11 @@ end
 
 function love.mousereleased(x, y, button)
   -- Releasing the left mouse button also releases the selected point
-  if Mode:is(MOVE) and button == 1 and Selected_point ~= 0 then
+  if
+    Mode:is(MOVE) and
+    button == 1 and
+    Selected_point ~= 0
+  then
     Selected_point = 0
   end
 end

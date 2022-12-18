@@ -79,7 +79,7 @@ Graph.paint_points = function(self)
     )
 
     -- Makes sure to only hover over one point
-    if Utils.is_point_in_circle(love.mouse.getX(), love.mouse.getY(), point.x, point.y, Radius) then
+    if Utils:is_point_in_circle(love.mouse.getX(), love.mouse.getY(), point.x, point.y, Radius) then
       self.hovered_point_id = id
     end
   end
