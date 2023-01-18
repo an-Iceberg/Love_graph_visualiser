@@ -44,6 +44,7 @@ Graph.remove_point = function(self, id)
     end
   end
 
+  -- Removing the point itself
   self.points[id] = nil
 end
 

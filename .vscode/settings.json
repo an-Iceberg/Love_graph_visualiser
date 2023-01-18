@@ -4,5 +4,4 @@
   ],
   "Lua.runtime.version": "LuaJIT",
   "Lua.workspace.checkThirdParty": false,
-  "workbench.colorTheme": "LOVE2D Theme"
 }
