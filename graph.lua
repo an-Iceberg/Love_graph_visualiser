@@ -1,3 +1,5 @@
+require("constants")
+
 Graph = {}
 
 Graph.points = {}
@@ -5,6 +7,7 @@ Graph.lines = {}
 Graph.path = {}
 Graph.padding = 5
 Graph.hovered_point_id = 0
+Graph.line_length = 1
 
 -- Adds a point to the graph at the mouse position
 Graph.add_point = function(self, x, y)
@@ -66,9 +69,9 @@ Graph.paint_points = function(self)
   for id, point in pairs(self.points) do
     -- Draws the point
     love.graphics.setColor(1, 0.5, 0)
-    love.graphics.circle("fill", point.x, point.y, Radius)
+    love.graphics.circle("fill", point.x, point.y, RADIUS)
     love.graphics.setColor(0, 0, 0)
-    love.graphics.circle("line", point.x, point.y, Radius + 1)
+    love.graphics.circle("line", point.x, point.y, RADIUS + 1)
 
     -- Draws the point id
     love.graphics.setColor(0, 0, 0)
@@ -80,7 +83,7 @@ Graph.paint_points = function(self)
     )
 
     -- Makes sure to only hover over one point
-    if Utils:is_point_in_circle(love.mouse.getX(), love.mouse.getY(), point.x, point.y, Radius) then
+    if Utils:is_point_in_circle(love.mouse.getX(), love.mouse.getY(), point.x, point.y, RADIUS) then
       self.hovered_point_id = id
     end
   end
@@ -133,10 +136,10 @@ Graph.paint_graph = function(self)
   -- Draws a highlight around the hovered point
   if self.hovered_point_id ~= 0 then
       love.graphics.setColor(1, 0, 1)
-      love.graphics.circle("line", self.points[self.hovered_point_id].x, self.points[self.hovered_point_id].y, Radius + 5)
+      love.graphics.circle("line", self.points[self.hovered_point_id].x, self.points[self.hovered_point_id].y, RADIUS + 5)
 
       love.graphics.setColor(0, 0, 0)
-      love.graphics.circle("line", self.points[self.hovered_point_id].x, self.points[self.hovered_point_id].y, Radius + 4)
-      love.graphics.circle("line", self.points[self.hovered_point_id].x, self.points[self.hovered_point_id].y, Radius + 6)
+      love.graphics.circle("line", self.points[self.hovered_point_id].x, self.points[self.hovered_point_id].y, RADIUS + 4)
+      love.graphics.circle("line", self.points[self.hovered_point_id].x, self.points[self.hovered_point_id].y, RADIUS + 6)
   end
 end

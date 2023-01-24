@@ -1,7 +1,4 @@
-MOVE = 1
-POINT = 2
-LINE = 3
-PATH = 4
+require("constants")
 
 Mode = {}
 

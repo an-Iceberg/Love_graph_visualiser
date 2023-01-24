@@ -1,3 +1,5 @@
+require("constants")
+
 UI = {}
 
 UI.width = 200
