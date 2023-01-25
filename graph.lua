@@ -5,7 +5,7 @@ Graph = {}
 Graph.points = {}
 Graph.lines = {}
 Graph.path = {}
-Graph.padding = 5
+Graph.padding = 5 -- What does this do?
 Graph.hovered_point_id = 0
 Graph.line_length = 1
 
@@ -61,19 +61,31 @@ Graph.remove_line = function(self, from, to)
   end
 end
 
--- Draws all points with their id in the center
+Graph.clear = function(self)
+  self.lines = {}
+  self.points = {}
+end
+
+-- Paints all points with their id in the center
 Graph.paint_points = function(self)
   -- If no point is hovered upon then this value will stay 0
   self.hovered_point_id = 0
 
   for id, point in pairs(self.points) do
-    -- Draws the point
-    love.graphics.setColor(1, 0.5, 0)
+    -- Paints the point
+
+    -- Paints the selected point yellow, orange otherwise
+    if SELECTED_POINT == id then
+      love.graphics.setColor(1, 1, 0)
+    else
+      love.graphics.setColor(1, 0.5, 0)
+    end
+
     love.graphics.circle("fill", point.x, point.y, RADIUS)
     love.graphics.setColor(0, 0, 0)
     love.graphics.circle("line", point.x, point.y, RADIUS + 1)
 
-    -- Draws the point id
+    -- Paints the point id
     love.graphics.setColor(0, 0, 0)
     -- Centering the text using the width and height of the text itself
     love.graphics.print(
@@ -89,11 +101,11 @@ Graph.paint_points = function(self)
   end
 end
 
--- Draws all lines and their lengths centered between the two points
+-- Paints all lines and their lengths centered between the two points
 Graph.paint_lines = function(self)
   for _, line in pairs(self.lines) do
-    -- TODO: don't draw the lines from the center of the circle, shift them to the edge of the circle
-    -- Drawing the line
+    -- TODO: don't paint the lines from the center of the circle, shift them to the edge of the circle
+    -- Painting the line
     love.graphics.setColor(0, 1, 1)
     love.graphics.line(
       self.points[line.from].x,
@@ -102,8 +114,8 @@ Graph.paint_lines = function(self)
       self.points[line.to].y
     )
 
-    -- TODO: the line length should be drawn on top of the points
-    -- Drawing a rectangle around the line length to make it better readable
+    -- TODO: the line length should be paintn on top of the points
+    -- Painting a rectangle around the line length to make it better readable
     love.graphics.setColor(0, 1, 1)
     love.graphics.rectangle(
       "fill",
@@ -124,22 +136,22 @@ Graph.paint_lines = function(self)
       (self.points[line.to].y + self.points[line.from].y) / 2 - (Font:getHeight() / 2)
     )
 
-    -- TODO: draw little triange indicating direction
+    -- TODO: paint little triange indicating direction
   end
 end
 
--- Draws the entire graph and paints a highlight around the hovered point
+-- Paints the entire graph and paints a highlight around the hovered point
 Graph.paint_graph = function(self)
   self:paint_lines()
   self:paint_points()
 
-  -- Draws a highlight around the hovered point
+  -- Paints a highlight around the hovered point
   if self.hovered_point_id ~= 0 then
-      love.graphics.setColor(1, 0, 1)
-      love.graphics.circle("line", self.points[self.hovered_point_id].x, self.points[self.hovered_point_id].y, RADIUS + 5)
+    love.graphics.setColor(1, 0, 1)
+    love.graphics.circle("line", self.points[self.hovered_point_id].x, self.points[self.hovered_point_id].y, RADIUS + 5)
 
-      love.graphics.setColor(0, 0, 0)
-      love.graphics.circle("line", self.points[self.hovered_point_id].x, self.points[self.hovered_point_id].y, RADIUS + 4)
-      love.graphics.circle("line", self.points[self.hovered_point_id].x, self.points[self.hovered_point_id].y, RADIUS + 6)
+    love.graphics.setColor(0, 0, 0)
+    love.graphics.circle("line", self.points[self.hovered_point_id].x, self.points[self.hovered_point_id].y, RADIUS + 4)
+    love.graphics.circle("line", self.points[self.hovered_point_id].x, self.points[self.hovered_point_id].y, RADIUS + 6)
   end
 end

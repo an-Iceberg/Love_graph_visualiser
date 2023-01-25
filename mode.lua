@@ -2,7 +2,7 @@ require("constants")
 
 Mode = {}
 
-Mode.mode = 0
+Mode.mode = MOVE
 
 Mode.is = function(self, mode)
   if self.mode == mode then

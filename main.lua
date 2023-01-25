@@ -8,6 +8,8 @@ require("constants")
 
 Font = love.graphics.getFont()
 
+-- TODO: consider restructuring using signals that are generated here
+
 -- Init
 function love.load()
   Graph:add_point(100, 100) -- 1
@@ -25,7 +27,7 @@ function love.load()
 
   Mode:increment()
 
-  Mode:set(POINT)
+  Mode:set(MOVE)
 end
 
 -- Mouse input
@@ -81,10 +83,9 @@ function love.mousereleased(x, y, button)
   -- Releasing the left mouse button also releases the selected point
   if
     Mode:is(MOVE) and
-    button == 1 and
-    Selected_point ~= 0
+    button == 1
   then
-    Selected_point = 0
+    SELECTED_POINT = 0
   end
 end
 
@@ -93,6 +94,9 @@ end
 
 -- Keybaord input
 function love.keypressed(key, scancode, is_repeat)
+  if key == "delete" or key == "backspace" then
+    Graph:clear()
+  end
 end
 
 --[[
@@ -105,7 +109,7 @@ end
 function love.update(delta_time)
 end
 
--- Draw game to screen
+-- Paint game to screen
 function love.draw()
   -- local mouse_x, mouse_y = love.mouse.getPosition()
 

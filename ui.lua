@@ -4,6 +4,8 @@ UI = {}
 
 UI.width = 200
 
+UI.advice_distance = 18
+
 UI.paint_ui = function(self)
   -- Paints the UI section on the right
   love.graphics.setColor(0.2, 0.2, 0.2)
@@ -11,10 +13,10 @@ UI.paint_ui = function(self)
 
   self:paint_fps()
   self:paint_mode()
+  self:paint_advice()
 end
 
 UI.paint_mode = function(self)
-  -- TODO: account for spacing on the very right
   local modes = {"Move", "Point", "Line", "Path"}
   local x_starting_position = love.graphics.getWidth() - UI.width
 
@@ -77,6 +79,47 @@ UI.paint_mode = function(self)
         Mode:set(index)
       end
     end
+  end
+end
+
+UI.paint_advice = function(self)
+  local x = love.graphics.getWidth() - (UI.width - Graph.padding)
+  love.graphics.setColor(1, 1, 1)
+  local message = "Delete/Backspace: clear graph\n"
+
+  if Mode.mode == MOVE then
+    love.graphics.print(
+      message.."Left click: move a point around",
+      x,
+      self.advice_distance + Graph.padding
+    )
+  elseif Mode.mode == POINT then
+    love.graphics.print(
+      message.."Left click: create a new point\nRight click: delete a point",
+      x,
+      self.advice_distance + Graph.padding
+    )
+  elseif Mode.mode == LINE then
+    if SELECTED_POINT == 0 then
+      -- No point has been selected yet
+      love.graphics.print(
+        message.."Left click: select a point",
+        x,
+        self.advice_distance + Graph.padding
+      )
+    else
+      love.graphics.print(
+        message.."Left click: create a new line\nRight click: delete a line",
+        x,
+        self.advice_distance + Graph.padding
+      )
+    end
+  elseif Mode.mode == PATH then
+    love.graphics.print(
+      message.."Left click: mark starting point\nRight click: mark ending point\n",
+      x,
+      self.advice_distance + Graph.padding
+    )
   end
 end
 
