@@ -104,17 +104,76 @@ end
 -- Paints all lines and their lengths centered between the two points
 Graph.paint_lines = function(self)
   for _, line in pairs(self.lines) do
+
+    local direction = {
+      x = self.points[line.from].x - self.points[line.to].x,
+      y = self.points[line.from].y - self.points[line.to].y
+    }
+    local arrow_head_location = {
+      x = self.points[line.to].x + (direction.x * ((RADIUS + 2) / math.sqrt(direction.x^2 + direction.y^2))),
+      y = self.points[line.to].y + (direction.y * ((RADIUS + 2) / math.sqrt(direction.x^2 + direction.y^2)))
+    }
+    local helper_point = {
+      x = self.points[line.to].x + (direction.x * ((RADIUS + 15) / math.sqrt(direction.x^2 + direction.y^2))),
+      y = self.points[line.to].y + (direction.y * ((RADIUS + 15) / math.sqrt(direction.x^2 + direction.y^2)))
+    }
+    local angle = 0.436 -- In radians
+    local arrow_head_length = 20
+
+    -- Calculating the tip of the triangle that touches the node (position + (direction * (radius / length)))
     -- TODO: don't paint the lines from the center of the circle, shift them to the edge of the circle
+    -- TODO: create vector2d objects
     -- Painting the line
     love.graphics.setColor(0, 1, 1)
     love.graphics.line(
-      self.points[line.from].x,
-      self.points[line.from].y,
-      self.points[line.to].x,
-      self.points[line.to].y
+      self.points[line.from].x + (direction.x * (-RADIUS / math.sqrt(direction.x^2 + direction.y^2))),
+      self.points[line.from].y + (direction.y * (-RADIUS / math.sqrt(direction.x^2 + direction.y^2))),
+      arrow_head_location.x,
+      arrow_head_location.y
     )
 
-    -- TODO: the line length should be paintn on top of the points
+    --[[
+    x1/y1 are the start of the line, x2/y2 are the end of the line where the head of the arrow should be
+    L1 is the length from x1/y1 to x2/y2
+    L2 is the length of the arrow head
+    a is the angle
+
+    Formula:
+    x3 = x2 + L2/L1 * [(x1 - x2) * cos(a) + (y1 - y2) * sin(a)]
+    y3 = y2 + L2/L1 * [(y1 - y2) * cos(a) - (x1 - x2) * sin(a)]
+    x4 = x2 + L2/L1 * [(x1 - x2) * cos(a) - (y1 - y2) * sin(a)]
+    y4 = y2 + L2/L1 * [(y1 - y2) * cos(a) + (x1 - x2) * sin(a)]
+
+    Source: https://math.stackexchange.com/questions/1314006/drawing-an-arrow
+    ]]
+    love.graphics.polygon(
+      "fill",
+      arrow_head_location.x,
+      arrow_head_location.y,
+      arrow_head_location.x + (arrow_head_length / math.sqrt(direction.x^2 + direction.y^2))*(((self.points[line.from].x - self.points[line.to].x) * math.cos(angle)) + ((self.points[line.from].y - self.points[line.to].y) * math.sin(angle))),
+      arrow_head_location.y + (arrow_head_length / math.sqrt(direction.x^2 + direction.y^2))*(((self.points[line.from].y - self.points[line.to].y) * math.cos(angle)) - ((self.points[line.from].x - self.points[line.to].x) * math.sin(angle))),
+      helper_point.x,
+      helper_point.y,
+      arrow_head_location.x + (arrow_head_length / math.sqrt(direction.x^2 + direction.y^2))*(((self.points[line.from].x - self.points[line.to].x) * math.cos(angle)) - ((self.points[line.from].y - self.points[line.to].y) * math.sin(angle))),
+      arrow_head_location.y + (arrow_head_length / math.sqrt(direction.x^2 + direction.y^2))*(((self.points[line.from].y - self.points[line.to].y) * math.cos(angle)) + ((self.points[line.from].x - self.points[line.to].x) * math.sin(angle)))
+    )
+    --[[
+    love.graphics.line(
+      arrow_head_location.x,
+      arrow_head_location.y,
+      arrow_head_location.x + (arrow_head_length / math.sqrt(direction.x^2 + direction.y^2))*(((self.points[line.from].x - self.points[line.to].x) * math.cos(angle)) + ((self.points[line.from].y - self.points[line.to].y) * math.sin(angle))),
+      arrow_head_location.y + (arrow_head_length / math.sqrt(direction.x^2 + direction.y^2))*(((self.points[line.from].y - self.points[line.to].y) * math.cos(angle)) - ((self.points[line.from].x - self.points[line.to].x) * math.sin(angle)))
+    )
+    love.graphics.line(
+      arrow_head_location.x,
+      arrow_head_location.y,
+      arrow_head_location.x + (arrow_head_length / math.sqrt(direction.x^2 + direction.y^2))*(((self.points[line.from].x - self.points[line.to].x) * math.cos(angle)) - ((self.points[line.from].y - self.points[line.to].y) * math.sin(angle))),
+      arrow_head_location.y + (arrow_head_length / math.sqrt(direction.x^2 + direction.y^2))*(((self.points[line.from].y - self.points[line.to].y) * math.cos(angle)) + ((self.points[line.from].x - self.points[line.to].x) * math.sin(angle)))
+    )
+    ]]
+
+    -- TODO: the line length should be painted at 1/4th the way from the arrow head to allow bidirecional edges
+    -- TODO: the line length should be painted on top of the points
     -- Painting a rectangle around the line length to make it better readable
     love.graphics.setColor(0, 1, 1)
     love.graphics.rectangle(
@@ -127,7 +186,7 @@ Graph.paint_lines = function(self)
       Font:getHeight() / 2
     )
 
-    -- Considering adding a rectangle to the background to make text more readable
+    -- Painting the line length
     love.graphics.setColor(0, 0, 0)
     -- Centering the text using the width and height of the text itself
     love.graphics.print(

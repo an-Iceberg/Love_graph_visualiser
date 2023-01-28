@@ -100,6 +100,7 @@ UI.paint_advice = function(self)
       self.advice_distance + Graph.padding
     )
   elseif Mode.mode == LINE then
+    -- TODO: adjust height because a slider for the line length is also going to be painted somewhere in the UI
     if SELECTED_POINT == 0 then
       -- No point has been selected yet
       love.graphics.print(
