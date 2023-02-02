@@ -5,6 +5,7 @@ require("mode")
 require("utils")
 require("ui")
 require("constants")
+require("vector2d")
 
 Font = love.graphics.getFont()
 

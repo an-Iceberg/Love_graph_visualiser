@@ -1,4 +1,5 @@
 require("constants")
+require("vector2d")
 
 Graph = {}
 
@@ -22,19 +23,16 @@ Graph.add_point = function(self, x, y)
     end
   end
 
-  self.points[missing_id] = {
-    x = x,
-    y = y,
-  }
+  self.points[missing_id] = Vector2d(x, y)
 end
 
 -- Adds a line from the specified point to the other specified point
 Graph.add_line = function(self, from, to, length)
-  -- TODO: do not allow duplicate lines
+  -- TODO: allow bidirectional edges
   table.insert(self.lines, {
-    from = from,
-    to = to,
-    length = length--love.graphics.newText(Font, length),
+    from = from, -- Point id
+    to = to, -- Point id
+    length = length --love.graphics.newText(Font, length),
   })
 end
 
@@ -105,18 +103,18 @@ end
 Graph.paint_lines = function(self)
   for _, line in pairs(self.lines) do
 
-    local direction = {
-      x = self.points[line.from].x - self.points[line.to].x,
-      y = self.points[line.from].y - self.points[line.to].y
-    }
-    local arrow_head_location = {
-      x = self.points[line.to].x + (direction.x * ((RADIUS + 2) / math.sqrt(direction.x^2 + direction.y^2))),
-      y = self.points[line.to].y + (direction.y * ((RADIUS + 2) / math.sqrt(direction.x^2 + direction.y^2)))
-    }
-    local helper_point = {
-      x = self.points[line.to].x + (direction.x * ((RADIUS + 15) / math.sqrt(direction.x^2 + direction.y^2))),
-      y = self.points[line.to].y + (direction.y * ((RADIUS + 15) / math.sqrt(direction.x^2 + direction.y^2)))
-    }
+    local direction = Vector2d(
+      self.points[line.from].x - self.points[line.to].x,
+      self.points[line.from].y - self.points[line.to].y
+    )
+    local arrow_head_location = Vector2d(
+      self.points[line.to].x + (direction.x * ((RADIUS + 2) / direction:magnitude())),
+      self.points[line.to].y + (direction.y * ((RADIUS + 2) / direction:magnitude()))
+    )
+    local helper_point = Vector2d(
+      self.points[line.to].x + (direction.x * ((RADIUS + 15) / direction:magnitude())),
+      self.points[line.to].y + (direction.y * ((RADIUS + 15) / direction:magnitude()))
+    )
     local angle = 0.436 -- In radians
     local arrow_head_length = 20
 
@@ -126,8 +124,8 @@ Graph.paint_lines = function(self)
     -- Painting the line
     love.graphics.setColor(0, 1, 1)
     love.graphics.line(
-      self.points[line.from].x + (direction.x * (-RADIUS / math.sqrt(direction.x^2 + direction.y^2))),
-      self.points[line.from].y + (direction.y * (-RADIUS / math.sqrt(direction.x^2 + direction.y^2))),
+      self.points[line.from].x + (direction.x * (-RADIUS / direction:magnitude())),
+      self.points[line.from].y + (direction.y * (-RADIUS / direction:magnitude())),
       arrow_head_location.x,
       arrow_head_location.y
     )
@@ -150,36 +148,27 @@ Graph.paint_lines = function(self)
       "fill",
       arrow_head_location.x,
       arrow_head_location.y,
-      arrow_head_location.x + (arrow_head_length / math.sqrt(direction.x^2 + direction.y^2))*(((self.points[line.from].x - self.points[line.to].x) * math.cos(angle)) + ((self.points[line.from].y - self.points[line.to].y) * math.sin(angle))),
-      arrow_head_location.y + (arrow_head_length / math.sqrt(direction.x^2 + direction.y^2))*(((self.points[line.from].y - self.points[line.to].y) * math.cos(angle)) - ((self.points[line.from].x - self.points[line.to].x) * math.sin(angle))),
+      arrow_head_location.x + (arrow_head_length / direction:magnitude())*(((self.points[line.from].x - self.points[line.to].x) * math.cos(angle)) + ((self.points[line.from].y - self.points[line.to].y) * math.sin(angle))),
+      arrow_head_location.y + (arrow_head_length / direction:magnitude())*(((self.points[line.from].y - self.points[line.to].y) * math.cos(angle)) - ((self.points[line.from].x - self.points[line.to].x) * math.sin(angle))),
       helper_point.x,
       helper_point.y,
-      arrow_head_location.x + (arrow_head_length / math.sqrt(direction.x^2 + direction.y^2))*(((self.points[line.from].x - self.points[line.to].x) * math.cos(angle)) - ((self.points[line.from].y - self.points[line.to].y) * math.sin(angle))),
-      arrow_head_location.y + (arrow_head_length / math.sqrt(direction.x^2 + direction.y^2))*(((self.points[line.from].y - self.points[line.to].y) * math.cos(angle)) + ((self.points[line.from].x - self.points[line.to].x) * math.sin(angle)))
+      arrow_head_location.x + (arrow_head_length / direction:magnitude())*(((self.points[line.from].x - self.points[line.to].x) * math.cos(angle)) - ((self.points[line.from].y - self.points[line.to].y) * math.sin(angle))),
+      arrow_head_location.y + (arrow_head_length / direction:magnitude())*(((self.points[line.from].y - self.points[line.to].y) * math.cos(angle)) + ((self.points[line.from].x - self.points[line.to].x) * math.sin(angle)))
     )
-    --[[
-    love.graphics.line(
-      arrow_head_location.x,
-      arrow_head_location.y,
-      arrow_head_location.x + (arrow_head_length / math.sqrt(direction.x^2 + direction.y^2))*(((self.points[line.from].x - self.points[line.to].x) * math.cos(angle)) + ((self.points[line.from].y - self.points[line.to].y) * math.sin(angle))),
-      arrow_head_location.y + (arrow_head_length / math.sqrt(direction.x^2 + direction.y^2))*(((self.points[line.from].y - self.points[line.to].y) * math.cos(angle)) - ((self.points[line.from].x - self.points[line.to].x) * math.sin(angle)))
-    )
-    love.graphics.line(
-      arrow_head_location.x,
-      arrow_head_location.y,
-      arrow_head_location.x + (arrow_head_length / math.sqrt(direction.x^2 + direction.y^2))*(((self.points[line.from].x - self.points[line.to].x) * math.cos(angle)) - ((self.points[line.from].y - self.points[line.to].y) * math.sin(angle))),
-      arrow_head_location.y + (arrow_head_length / math.sqrt(direction.x^2 + direction.y^2))*(((self.points[line.from].y - self.points[line.to].y) * math.cos(angle)) + ((self.points[line.from].x - self.points[line.to].x) * math.sin(angle)))
-    )
-    ]]
 
-    -- TODO: the line length should be painted at 1/4th the way from the arrow head to allow bidirecional edges
+    local length_position = Vector2d(
+      (1/3)*self.points[line.from].x + (2/3)*self.points[line.to].x,
+      (1/3)*self.points[line.from].y + (2/3)*self.points[line.to].y
+    )
+
+    -- Painting the line length 1/3 from the arrow head
     -- TODO: the line length should be painted on top of the points
     -- Painting a rectangle around the line length to make it better readable
     love.graphics.setColor(0, 1, 1)
     love.graphics.rectangle(
       "fill",
-      (self.points[line.to].x + self.points[line.from].x) / 2 - (Font:getWidth(line.length) / 2) - self.padding,
-      (self.points[line.to].y + self.points[line.from].y) / 2 - (Font:getHeight() / 2) + 0.5,
+      length_position.x - (Font:getWidth(line.length) / 2) - self.padding,
+      length_position.y - (Font:getHeight() / 2) + 0.5,
       Font:getWidth(line.length) + (self.padding * 2),
       Font:getHeight(),
       Font:getHeight() / 2,
@@ -191,11 +180,9 @@ Graph.paint_lines = function(self)
     -- Centering the text using the width and height of the text itself
     love.graphics.print(
       line.length,
-      (self.points[line.to].x + self.points[line.from].x) / 2 - (Font:getWidth(line.length) / 2),
-      (self.points[line.to].y + self.points[line.from].y) / 2 - (Font:getHeight() / 2)
+      length_position.x - (Font:getWidth(line.length) / 2),
+      length_position.y - (Font:getHeight() / 2)
     )
-
-    -- TODO: paint little triange indicating direction
   end
 end
 
