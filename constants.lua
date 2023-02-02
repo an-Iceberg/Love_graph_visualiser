@@ -6,7 +6,6 @@ POINT = 2
 LINE = 3
 PATH = 4
 
--- This mainly exists for debouncing purposes
 SELECTED_POINT = 0
 
 RADIUS = 13

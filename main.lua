@@ -5,7 +5,7 @@ require("mode")
 require("utils")
 require("ui")
 require("constants")
-require("vector2d")
+-- require("vector2d")
 
 Font = love.graphics.getFont()
 
@@ -22,11 +22,9 @@ function love.load()
   Graph:add_line(2, 4, 90)
   Graph:add_line(1, 2, 40)
   Graph:add_line(2, 3, 200)
-  Graph:add_line(3, 5, 3985)
+  Graph:add_line(3, 5, 69)
 
   Graph:remove_point(4)
-
-  Mode:increment()
 
   Mode:set(MOVE)
 end
@@ -41,8 +39,6 @@ function love.mousepressed(x, y, button)
     Utils:is_point_in_rectangle(x, y, RADIUS, RADIUS, love.graphics.getWidth() - (2 * RADIUS + UI.width), love.graphics.getHeight() - (2 * RADIUS))
   then
     SELECTED_POINT = Graph.hovered_point_id
-  else
-    SELECTED_POINT = 0
   end
 
   -- Create a new point with left click
@@ -57,11 +53,38 @@ function love.mousepressed(x, y, button)
   -- Remove a point with right click
   if
     Mode:is(POINT) and
-    button == RIGHT_MOUSE and -- Right mouse button
+    button == RIGHT_MOUSE and
     Graph.hovered_point_id ~= 0
   then
     Graph:remove_point(Graph.hovered_point_id)
   end
+
+  -- Selecting a point in LINE mode
+  if
+    Mode:is(LINE) and
+    button == LEFT_MOUSE
+  then
+    -- Adding a line
+    if SELECTED_POINT == 0 then
+      SELECTED_POINT = Graph.hovered_point_id
+    else
+      Graph:add_line(SELECTED_POINT, Graph.hovered_point_id, Graph.line_length)
+      SELECTED_POINT = 0
+    end
+  end
+
+  -- Deleting a line
+  if
+    Mode:is(LINE) and
+    button == RIGHT_MOUSE
+  then
+    Graph:remove_line(SELECTED_POINT, Graph.hovered_point_id)
+    SELECTED_POINT = 0
+  end
+
+  -- TODO: Selecting the start point
+
+  -- TODO: Selecting the end point
 end
 
 function love.mousemoved(x, y, delta_x, delta_y)
@@ -84,7 +107,7 @@ function love.mousereleased(x, y, button)
   -- Releasing the left mouse button also releases the selected point
   if
     Mode:is(MOVE) and
-    button == 1
+    button == LEFT_MOUSE
   then
     SELECTED_POINT = 0
   end

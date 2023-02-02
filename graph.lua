@@ -23,11 +23,27 @@ Graph.add_point = function(self, x, y)
     end
   end
 
-  self.points[missing_id] = Vector2d(x, y)
+  self.points[missing_id] = {
+    x = x,
+    y = y
+  }
 end
 
 -- Adds a line from the specified point to the other specified point
 Graph.add_line = function(self, from, to, length)
+  -- Disallowing reflexive vertices
+  if from == to then
+    return
+  end
+
+  -- If the line already exists, then we only update the length
+  for _, line in pairs(self.lines) do
+    if line.from == from and line.to == to then
+      line.length = length
+      return
+    end
+  end
+
   -- TODO: allow bidirectional edges
   table.insert(self.lines, {
     from = from, -- Point id
@@ -51,10 +67,11 @@ end
 
 -- Removes a specified line
 Graph.remove_line = function(self, from, to)
-  for index, line in ipairs(self.lines) do
+  for index, line in pairs(self.lines) do
     -- Finding the line we want to remove
     if line.from == from and line.to == to then
       table.remove(self.lines, index)
+      return
     end
   end
 end
@@ -62,6 +79,10 @@ end
 Graph.clear = function(self)
   self.lines = {}
   self.points = {}
+end
+
+Graph.find_shortest_path = function(self)
+  -- TODO: implement
 end
 
 -- Paints all points with their id in the center
@@ -102,6 +123,8 @@ end
 -- Paints all lines and their lengths centered between the two points
 Graph.paint_lines = function(self)
   for _, line in pairs(self.lines) do
+    -- FIX: when painting bidirectional edges the line lengths should be painted over all lines
+    -- TODO: consider refactoring a lot of these math expressions into their own functions
 
     local direction = Vector2d(
       self.points[line.from].x - self.points[line.to].x,
@@ -119,8 +142,6 @@ Graph.paint_lines = function(self)
     local arrow_head_length = 20
 
     -- Calculating the tip of the triangle that touches the node (position + (direction * (radius / length)))
-    -- TODO: don't paint the lines from the center of the circle, shift them to the edge of the circle
-    -- TODO: create vector2d objects
     -- Painting the line
     love.graphics.setColor(0, 1, 1)
     love.graphics.line(
@@ -155,14 +176,17 @@ Graph.paint_lines = function(self)
       arrow_head_location.x + (arrow_head_length / direction:magnitude())*(((self.points[line.from].x - self.points[line.to].x) * math.cos(angle)) - ((self.points[line.from].y - self.points[line.to].y) * math.sin(angle))),
       arrow_head_location.y + (arrow_head_length / direction:magnitude())*(((self.points[line.from].y - self.points[line.to].y) * math.cos(angle)) + ((self.points[line.from].x - self.points[line.to].x) * math.sin(angle)))
     )
+  end
+end
 
+Graph.paint_line_lengths = function(self)
+  for _, line in pairs(self.lines) do
     local length_position = Vector2d(
       (1/3)*self.points[line.from].x + (2/3)*self.points[line.to].x,
       (1/3)*self.points[line.from].y + (2/3)*self.points[line.to].y
     )
 
     -- Painting the line length 1/3 from the arrow head
-    -- TODO: the line length should be painted on top of the points
     -- Painting a rectangle around the line length to make it better readable
     love.graphics.setColor(0, 1, 1)
     love.graphics.rectangle(
@@ -190,6 +214,7 @@ end
 Graph.paint_graph = function(self)
   self:paint_lines()
   self:paint_points()
+  self:paint_line_lengths()
 
   -- Paints a highlight around the hovered point
   if self.hovered_point_id ~= 0 then

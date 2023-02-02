@@ -87,19 +87,19 @@ UI.paint_advice = function(self)
   love.graphics.setColor(1, 1, 1)
   local message = "Delete/Backspace: clear graph\n"
 
-  if Mode.mode == MOVE then
+  if Mode:is(MOVE) then
     love.graphics.print(
       message.."Left click: move a point around",
       x,
       self.advice_distance + Graph.padding
     )
-  elseif Mode.mode == POINT then
+  elseif Mode:is(POINT) then
     love.graphics.print(
       message.."Left click: create a new point\nRight click: delete a point",
       x,
       self.advice_distance + Graph.padding
     )
-  elseif Mode.mode == LINE then
+  elseif Mode:is(LINE) then
     -- TODO: adjust height because a slider for the line length is also going to be painted somewhere in the UI
     if SELECTED_POINT == 0 then
       -- No point has been selected yet
@@ -115,13 +115,17 @@ UI.paint_advice = function(self)
         self.advice_distance + Graph.padding
       )
     end
-  elseif Mode.mode == PATH then
+  elseif Mode:is(PATH) then
     love.graphics.print(
       message.."Left click: mark starting point\nRight click: mark ending point\n",
       x,
       self.advice_distance + Graph.padding
     )
   end
+end
+
+UI.paint_line_length = function(self)
+  -- TODO: adjustable line length
 end
 
 UI.paint_fps = function(self)
