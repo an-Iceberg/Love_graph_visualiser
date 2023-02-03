@@ -44,7 +44,6 @@ Graph.add_line = function(self, from, to, length)
     end
   end
 
-  -- TODO: allow bidirectional edges
   table.insert(self.lines, {
     from = from, -- Point id
     to = to, -- Point id
@@ -123,7 +122,6 @@ end
 -- Paints all lines and their lengths centered between the two points
 Graph.paint_lines = function(self)
   for _, line in pairs(self.lines) do
-    -- FIX: when painting bidirectional edges the line lengths should be painted over all lines
     -- TODO: consider refactoring a lot of these math expressions into their own functions
 
     local direction = Vector2d(

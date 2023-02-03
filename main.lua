@@ -68,7 +68,10 @@ function love.mousepressed(x, y, button)
     if SELECTED_POINT == 0 then
       SELECTED_POINT = Graph.hovered_point_id
     else
-      Graph:add_line(SELECTED_POINT, Graph.hovered_point_id, Graph.line_length)
+      if Graph.hovered_point_id ~= 0 then
+        Graph:add_line(SELECTED_POINT, Graph.hovered_point_id, Graph.line_length)
+      end
+
       SELECTED_POINT = 0
     end
   end
@@ -78,7 +81,10 @@ function love.mousepressed(x, y, button)
     Mode:is(LINE) and
     button == RIGHT_MOUSE
   then
-    Graph:remove_line(SELECTED_POINT, Graph.hovered_point_id)
+    if Graph.hovered_point_id ~=0 then
+      Graph:remove_line(SELECTED_POINT, Graph.hovered_point_id)
+    end
+
     SELECTED_POINT = 0
   end
 
