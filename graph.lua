@@ -6,6 +6,8 @@ Graph = {}
 Graph.points = {}
 Graph.lines = {}
 Graph.path = {}
+Graph.start = 0
+Graph._end = 0
 Graph.padding = 5 -- What does this do?
 Graph.hovered_point_id = 0
 Graph.line_length = 1
@@ -78,6 +80,14 @@ end
 Graph.clear = function(self)
   self.lines = {}
   self.points = {}
+end
+
+Graph.set_start = function(self, id)
+  self.start = id
+end
+
+Graph.set_end = function(self, id)
+  self._end = id
 end
 
 Graph.find_shortest_path = function(self)

@@ -10,6 +10,7 @@ require("constants")
 Font = love.graphics.getFont()
 
 -- TODO: consider restructuring using signals that are generated here
+-- TODO: move all code into "/src"
 
 -- Init
 function love.load()
@@ -88,6 +89,14 @@ function love.mousepressed(x, y, button)
     SELECTED_POINT = 0
   end
 
+  -- Selecting the slider UI element
+  if
+    Mode:is(LINE) and
+    Utils:is_point_in_circle(x, y, UI.button_x_position, UI.button_y_position, UI.button_size)
+  then
+    UI.slider_button_is_pressed = true
+  end
+
   -- TODO: Selecting the start point
 
   -- TODO: Selecting the end point
@@ -116,6 +125,10 @@ function love.mousereleased(x, y, button)
     button == LEFT_MOUSE
   then
     SELECTED_POINT = 0
+  end
+
+  if Mode:is(LINE) then
+    UI.slider_button_is_pressed = false
   end
 end
 

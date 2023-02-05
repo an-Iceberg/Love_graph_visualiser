@@ -40,3 +40,7 @@ Utils.is_point_in_pill = function(self, point_x, point_y, rectangle_top_left_x, 
     self:is_point_in_circle(point_x, point_y, rectangle_top_left_x + rectangle_width, rectangle_height / 2, rectangle_height / 2)
   )
 end
+
+Utils.x_position_to_line_length = function(self, x_position)
+  return math.floor(((99/175) * x_position) - (3064/5))
+end
